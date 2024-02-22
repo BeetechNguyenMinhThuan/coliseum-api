@@ -1,5 +1,5 @@
 const { GraphQLError } = require("graphql");
-const { Novel, UserLike } = require("../../models");
+const { Novel, UserLike, UserBookmark } = require("../../models");
 const NovelService = require("../../services/novelService");
 
 const novelResolver = {
@@ -30,7 +30,6 @@ const novelResolver = {
       const res = await NovelService.paginate(parent, args, context);
       return res;
     },
-    
   },
   Novel: {
     user: async (parent, args, context) => {
@@ -197,6 +196,38 @@ const novelResolver = {
             ? "Novel favorited successfully!"
             : "Novel unfavorited successfully!",
           isFavorite,
+        };
+      } catch (error) {
+        console.log(error);
+        return {
+          success: false,
+          message: "An error occurred while toggling favorite status.",
+        };
+      }
+    },
+    toggleUserBookmark: async (_, args, context) => {
+      try {
+        const { novelId } = args;
+        const { user } = context.user;
+        const userId = user.id;
+        const existingBookmark = await UserBookmark.findOne({
+          where: { user_id: userId, novel_id: novelId },
+        });
+
+        let isBookmark = false;
+        if (existingBookmark) {
+          await existingBookmark.destroy({ force: true });
+        } else {
+          await UserBookmark.create({ user_id: userId, novel_id: novelId });
+          isBookmark = true;
+        }
+
+        return {
+          success: true,
+          message: isBookmark
+            ? "Novel bookmarked successfully!"
+            : "Novel unbookmarked successfully!",
+          isBookmark,
         };
       } catch (error) {
         console.log(error);

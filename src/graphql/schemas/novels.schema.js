@@ -71,6 +71,13 @@ const novelSchema = gql`
     message: String!
     isFavorite: Boolean
   }
+  
+  
+  type UserBookmarkNovelResponse implements MutationResponse {
+    success: Boolean!
+    message: String!
+    isBookmark: Boolean
+  }
 
   type Query {
     novel(novel_id: Int!): Novel
@@ -88,6 +95,7 @@ const novelSchema = gql`
     updateNovel(novel_id: Int!, input: NovelInput!): Novel
     deleteNovel(novel_id: Int!): String
     toggleUserLike(novelId: Int!): UserLikeNovelResponse
+    toggleUserBookmark(novelId: Int!): UserBookmarkNovelResponse
   }
 `;
 
