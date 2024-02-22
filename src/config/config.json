@@ -2,7 +2,7 @@
   "development": {
     "username": "root",
     "password": null,
-    "database": "coliseum_crud_test",
+    "database": "coliseum",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
