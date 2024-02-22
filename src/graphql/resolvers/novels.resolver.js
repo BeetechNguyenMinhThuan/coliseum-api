@@ -80,6 +80,15 @@ const novelResolver = {
         throw new GraphQLError(error.message);
       }
     },
+    user_like: async (parent, args, context) => {
+      try {
+        const userLikes = await parent.getUserLikeNovels();
+        const userIds = userLikes.map((user) => user.user_id);
+        return userIds;
+      } catch (error) {
+        throw new GraphQLError(error.message);
+      }
+    },
   },
   Mutation: {
     createNovel: async (parent, args, context) => {
