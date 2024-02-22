@@ -31,6 +31,15 @@ const userResolver = {
         throw new GraphQLError(error.message);
       }
     },
+    author: async (parent, args, context) => {
+      try {
+        const { user_id } = args;
+        const author = await User.findOne({ where: { user_id } });
+        return author;
+      } catch (error) {
+        throw new GraphQLError(error);
+      }
+    },
     getUsersPaginate: async (parent, { page, limit }, context) => {
       try {
         const offset = (page - 1) * limit;

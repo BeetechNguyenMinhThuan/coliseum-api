@@ -4,7 +4,7 @@ const novelSchema = gql`
     novel_id: Int
     novel_ulid: String
     user_id: Int
-    user:User
+    user: User
     title: String
     synopsis: String
     cover_picture_url: String
@@ -53,7 +53,7 @@ const novelSchema = gql`
     first_name_publish_at: String
     first_completed_at: String
   }
-  
+
   type NovelPagination {
     novels: [Novel!]
     totalItems: Int
@@ -64,7 +64,13 @@ const novelSchema = gql`
   input filterNovel {
     searchValue: String
   }
-  
+
+  type UserLikeNovelResponse implements MutationResponse {
+    success: Boolean!
+    message: String!
+    isFavorite: Boolean
+  }
+
   type Query {
     novel(novel_id: Int!): Novel
     novels: [Novel]
@@ -79,6 +85,7 @@ const novelSchema = gql`
     createNovel(input: NovelInput!): Novel
     updateNovel(novel_id: Int!, input: NovelInput!): Novel
     deleteNovel(novel_id: Int!): String
+    toggleUserLike(novelId: Int!): UserLikeNovelResponse
   }
 `;
 
