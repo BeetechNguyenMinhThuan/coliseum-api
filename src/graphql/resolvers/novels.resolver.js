@@ -1,5 +1,5 @@
 const { GraphQLError } = require("graphql");
-const { Novel } = require("../../models");
+const { Novel, UserLike } = require("../../models");
 const NovelService = require("../../services/novelService");
 
 const novelResolver = {
@@ -157,6 +157,39 @@ const novelResolver = {
         return "OK";
       } catch (error) {
         throw new GraphQLError(error.message);
+      }
+    },
+    toggleUserLike: async (_, args, context) => {
+      try {
+        const { novelId } = args;
+        const { user } = context.user;
+        const userId = user.id;
+        const existingFavorite = await UserLike.findOne({
+          where: { user_id: userId, novel_id: novelId },
+        });
+
+        console.log(existingFavorite);
+        let isFavorite = false;
+        if (existingFavorite) {
+          await existingFavorite.destroy({ force: true });
+        } else {
+          await UserLike.create({ user_id: userId, novel_id: novelId });
+          isFavorite = true;
+        }
+
+        return {
+          success: true,
+          message: isFavorite
+            ? "Novel favorited successfully!"
+            : "Novel unfavorited successfully!",
+          isFavorite,
+        };
+      } catch (error) {
+        console.log(error);
+        return {
+          success: false,
+          message: "An error occurred while toggling favorite status.",
+        };
       }
     },
   },

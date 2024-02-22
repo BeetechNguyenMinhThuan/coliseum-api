@@ -14,7 +14,6 @@ const userSchema = gql`
     created_at: DateTime
     updated_at: DateTime
     deleted_at: DateTime
-    isSpaceShipPassenger: Boolean
   }
 
   input createUserInput {
@@ -33,7 +32,6 @@ const userSchema = gql`
   }
 
   type CreateUserMutationResponse implements MutationResponse {
-    code: String!
     success: Boolean!
     message: String!
     user: User
@@ -41,6 +39,7 @@ const userSchema = gql`
 
   extend type Query {
     getUsers: [User]
+    author(user_id: Int!): User
     getUsersPaginate(page: Int, limit: Int): UserPagination
   }
 
