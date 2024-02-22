@@ -28,6 +28,7 @@ const novelSchema = gql`
     total_likes: Int
     total_badges: Int
     total_bookmarks: Int
+    user_like: [Int]
     created_at: DateTime
     updated_at: DateTime
     deleted_at: DateTime
