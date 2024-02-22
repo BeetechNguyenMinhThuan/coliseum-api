@@ -4,6 +4,7 @@ const allTypeDefs = require("./src/graphql/schemas/index.schema");
 const allResolvers = require("./src/graphql/resolvers/index.resolver");
 const { sequelize } = require("./src/models");
 const AuthService = require("./src/services/authService");
+const UserService = require("./src/services/userService");
 
 const server = new ApolloServer({
   typeDefs: allTypeDefs,
@@ -13,15 +14,15 @@ const server = new ApolloServer({
 });
 const openApolloServer = async () => {
   const { url } = await startStandaloneServer(server, {
-    context: async ({ req, res }) => {
+    context: async ({ req }) => {
       try {
         let token = req.headers.authorization.split(" ")[1];
         if (token) {
-          const user = await AuthService.decodeJWT(token);
+          const user = UserService.getUserByToken(token);
           return { user };
         }
       } catch (error) {
-        return {};
+        return error;
       }
     },
     listen: { port: 5000 },

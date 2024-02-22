@@ -36,17 +36,28 @@ const roundResolver = {
         if (!user) {
           return null;
         }
+        const whereCondition = {
+          round_name: {
+            [Op.like]: `%${filter.searchValue ?? ""}%`,
+          },
+        };
+
+        const filtersRoundType = [
+          { key: `isColiseum`, value: 1 },
+          { key: `isLeageMatch`, value: 2 },
+        ];
+
+        filtersRoundType.forEach(({ key, value }) => {
+          if (filter[key] === true) {
+            whereCondition.round_type = whereCondition.round_type
+              ? [...whereCondition.round_type, value]
+              : [value];
+          }
+        });
+
         const offset = (page - 1) * limit;
         const { count, rows } = await Round.findAndCountAll({
-          where: {
-            round_name: {
-              [Op.like]: `%${filter.searchValue ?? ""}%`,
-            },
-            [Op.or]: [
-              { round_type: filter.isColiseum ?? "1" },
-              { round_type: filter.isLeageMatch ?? "2" },
-            ],
-          },
+          where: whereCondition,
           offset,
           limit,
         });

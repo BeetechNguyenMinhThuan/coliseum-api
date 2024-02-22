@@ -1,7 +1,7 @@
 const { GraphQLError } = require("graphql");
-const { Round } = require("../models");
+const { Novel } = require("../models");
 const { Op } = require("sequelize");
-class RoundService {
+class NovelService {
   static async get(args) {
     try {
       const { search } = args;
@@ -19,41 +19,42 @@ class RoundService {
     }
   }
 
-  static async paginate() {
+  static async paginate(parent, args, context) {
     try {
+      const { page, limit, filter } = args;
       const { user } = context;
-      
+
       if (!user) {
         return null;
       }
       const whereCondition = {
-        round_name: {
-          [Op.like]: `%${filter.searchValue ?? ""}%`,
+        title: {
+          [Op.like]: `%${filter?.searchValue ?? ""}%`,
         },
       };
 
-      const filtersRoundType = [
-        { key: `isColiseum`, value: 1 },
-        { key: `isLeageMatch`, value: 2 },
-      ];
+      // const filtersRoundType = [
+      //   { key: `isColiseum`, value: 1 },
+      //   { key: `isLeageMatch`, value: 2 },
+      // ];
 
-      filtersRoundType.forEach(({ key, value }) => {
-        if (filter[key] === true) {
-          whereCondition.round_type = whereCondition.round_type
-            ? [...whereCondition.round_type, value]
-            : [value];
-        }
-      });
+      // filtersRoundType.forEach(({ key, value }) => {
+      //   if (filter[key] === true) {
+      //     whereCondition.round_type = whereCondition.round_type
+      //       ? [...whereCondition.round_type, value]
+      //       : [value];
+      //   }
+      // });
 
       const offset = (page - 1) * limit;
-      const { count, rows } = await Round.findAndCountAll({
+      const { count, rows } = await Novel.findAndCountAll({
         where: whereCondition,
         offset,
         limit,
       });
 
       return {
-        rounds: rows,
+        novels: rows,
         totalItems: count,
         totalPages: Math.ceil(count / limit),
         currentPage: page,
@@ -63,4 +64,4 @@ class RoundService {
     }
   }
 }
-module.exports = RoundService;
+module.exports = NovelService;

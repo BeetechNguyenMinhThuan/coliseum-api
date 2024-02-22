@@ -27,12 +27,15 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsToMany(OfficialTag, {
         through: "NovelTag",
         foreignKey: "novel_id",
+        as: "novelTags",
       });
       this.belongsToMany(OfficialBadge, {
         through: "NovelBadge",
         foreignKey: "novel_id",
       });
       this.hasMany(NovelComment, { foreignKey: "novel_id" });
+
+      this.belongsTo(User, { foreignKey: "user_id" });
     }
   }
 

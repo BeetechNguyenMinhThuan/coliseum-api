@@ -28,7 +28,7 @@ const ErrorTypes = {
   },
 };
 
-function throwCustomError(errorMessage, errorType) {
+function throwCustomError(errorMessage, errorType = 500) {
   throw new GraphQLError(errorMessage, {
     extensions: {
       code: errorType.errorCode,

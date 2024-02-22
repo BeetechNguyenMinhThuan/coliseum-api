@@ -17,6 +17,9 @@ module.exports = (sequelize, DataTypes) => {
         through: "UserBadge",
         foreignKey: "user_id",
       });
+      
+      this.hasMany(Novel, { foreignKey: "user_id" });
+      
     }
   }
 
