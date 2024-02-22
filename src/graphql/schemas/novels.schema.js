@@ -69,6 +69,8 @@ const novelSchema = gql`
   type UserLikeNovelResponse implements MutationResponse {
     success: Boolean!
     message: String!
+    novel_id: Int
+    likedCount: Int
     isFavorite: Boolean
   }
   

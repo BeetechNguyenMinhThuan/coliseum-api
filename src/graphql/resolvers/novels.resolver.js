@@ -180,8 +180,10 @@ const novelResolver = {
         const existingFavorite = await UserLike.findOne({
           where: { user_id: userId, novel_id: novelId },
         });
+        const novelItem = await Novel.findOne({
+          where: { novel_id: novelId },
+        });
 
-        console.log(existingFavorite);
         let isFavorite = false;
         if (existingFavorite) {
           await existingFavorite.destroy({ force: true });
@@ -189,12 +191,15 @@ const novelResolver = {
           await UserLike.create({ user_id: userId, novel_id: novelId });
           isFavorite = true;
         }
+        const likedCount = await novelItem.countUserLikeNovels();
 
         return {
           success: true,
           message: isFavorite
             ? "Novel favorited successfully!"
             : "Novel unfavorited successfully!",
+          novel_id: novelId,
+          likedCount: likedCount,
           isFavorite,
         };
       } catch (error) {
