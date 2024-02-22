@@ -75,6 +75,7 @@ const novelSchema = gql`
   type Query {
     novel(novel_id: Int!): Novel
     novels: [Novel]
+    novelsByAuthor(userId: Int!): [Novel]
     getNovelsPaginate(
       page: Int
       limit: Int

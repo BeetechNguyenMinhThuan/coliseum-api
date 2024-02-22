@@ -26,6 +26,11 @@ const novelResolver = {
       const res = await NovelService.paginate(parent, args, context);
       return res;
     },
+    novelsByAuthor: async (parent, args, context) => {
+      const res = await NovelService.paginate(parent, args, context);
+      return res;
+    },
+    
   },
   Novel: {
     user: async (parent, args, context) => {

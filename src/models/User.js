@@ -6,7 +6,6 @@ module.exports = (sequelize, DataTypes) => {
         through: "UserLike",
         foreignKey: "user_id",
         as: "userLikeNovels",
-        
       });
       this.belongsToMany(Novel, {
         through: "UserBookmark",
@@ -17,9 +16,8 @@ module.exports = (sequelize, DataTypes) => {
         through: "UserBadge",
         foreignKey: "user_id",
       });
-      
+
       this.hasMany(Novel, { foreignKey: "user_id" });
-      
     }
   }
 

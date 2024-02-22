@@ -10,7 +10,7 @@ const { throwCustomError } = require("../../heplers/errorHandle");
 const { ErrorTypes } = require("../../heplers/errorHandle");
 const userResolver = {
   Query: {
-    getUsers: async (parent, args, context) => {
+    users: async (parent, args, context) => {
       try {
         return await User.findAll({
           include: [
@@ -31,15 +31,16 @@ const userResolver = {
         throw new GraphQLError(error.message);
       }
     },
-    author: async (parent, args, context) => {
+    user: async (parent, args, context) => {
       try {
-        const { user_id } = args;
-        const author = await User.findOne({ where: { user_id } });
-        return author;
+        const { userId } = args;
+        const user = await User.findOne({ where: { user_id: userId } });
+        return user;
       } catch (error) {
         throw new GraphQLError(error);
       }
     },
+
     getUsersPaginate: async (parent, { page, limit }, context) => {
       try {
         const offset = (page - 1) * limit;
@@ -77,6 +78,13 @@ const userResolver = {
     user_badges: async (parent, args, context) => {
       try {
         return await parent.getOfficialBadges();
+      } catch (error) {
+        throw new GraphQLError(error.message);
+      }
+    },
+    novels: async (parent, args, context) => {
+      try {
+        return await parent.getNovels();
       } catch (error) {
         throw new GraphQLError(error.message);
       }
