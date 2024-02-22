@@ -11,6 +11,7 @@ const userSchema = gql`
     novel_like: [Novel]
     novel_bookmark: [Novel]
     user_badges: [OfficialBadge]
+    novels: [Novel]
     created_at: DateTime
     updated_at: DateTime
     deleted_at: DateTime
@@ -38,8 +39,8 @@ const userSchema = gql`
   }
 
   extend type Query {
-    getUsers: [User]
-    author(user_id: Int!): User
+    users: [User]
+    user(userId: Int!): User
     getUsersPaginate(page: Int, limit: Int): UserPagination
   }
 
