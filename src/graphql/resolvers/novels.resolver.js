@@ -93,6 +93,15 @@ const novelResolver = {
         throw new GraphQLError(error.message);
       }
     },
+    user_bookmarks: async (parent, args, context) => {
+      try {
+        const userBookmarks = await parent.getUserBookmarkNovels();
+        const userIds = userBookmarks.map((user) => user.user_id);
+        return userIds;
+      } catch (error) {
+        throw new GraphQLError(error.message);
+      }
+    },
   },
   Mutation: {
     createNovel: async (parent, args, context) => {
