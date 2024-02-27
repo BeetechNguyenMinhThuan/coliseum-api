@@ -1,7 +1,10 @@
 const { GraphQLError } = require("graphql");
-const { Novel, UserLike, UserBookmark } = require("../../models");
+const { Novel, UserLike, UserBookmark, User } = require("../../models");
+const { Op } = require("sequelize");
+const moment = require("moment-timezone");
 const NovelService = require("../../services/novelService");
-
+const { format, subDays } = require("date-fns");
+const { subHours } = require("date-fns");
 const novelResolver = {
   Query: {
     novels: async (parent, args, context) => {
@@ -30,6 +33,76 @@ const novelResolver = {
       const res = await NovelService.paginate(parent, args, context);
       return res;
     },
+    novelsOrderBytime: async (parent, args, context) => {
+      const currentTime = new Date();
+      const { type } = args;
+      try {
+        let timeFilter = "";
+        switch (type) {
+          case "new":
+            order = [["first_novel_publish_at", "DESC"]];
+            break;
+          case "hot":
+            timeFilter = subHours(currentTime, 2);
+            break;
+          case "weekly":
+            timeFilter = subDays(currentTime, 7);
+            break;
+          case "monthly":
+            timeFilter = subDays(currentTime, 30);
+            break;
+          case "quarterly":
+            timeFilter = subDays(currentTime, 90);
+            break;
+          case "yearly":
+            timeFilter = subDays(currentTime, 365);
+            break;
+          case "cumulative":
+            timeFilter = subDays(currentTime, 2);
+            break;
+          default:
+            break;
+        }
+
+        const novels = await Novel.findAll({
+          include: [
+            {
+              model: User,
+              as: "userLikeNovels",
+              through: {
+                model: UserLike,
+                where: {
+                  created_at: {
+                    [Op.between]: [timeFilter, currentTime],
+                  },
+                },
+              },
+            },
+          ],
+          // where: {
+          //   created_at: {
+          //     [Op.between]: [timeFilter, currentTime],
+          //   },
+          // },
+        });
+
+        novels.sort((novelA, novelB) => {
+          return novelB.userLikeNovels.length - novelA.userLikeNovels.length;
+        });
+        
+        const novelsWithUser = novels.map((novel) => ({
+          novel_id: novel.novel_id,
+          likeCount: novel.userLikeNovels.length,
+          title: novel.title,
+          user_like: novel.userLikeNovels,
+        }));
+        
+        return novelsWithUser;
+      } catch (error) {
+        console.log(error);
+        throw new Error("Failed to fetch novels likes");
+      }
+    },
   },
   Novel: {
     user: async (parent, args, context) => {
@@ -39,7 +112,15 @@ const novelResolver = {
         throw new GraphQLError(error.message);
       }
     },
-    novel_tag: async (parent, args, context) => {
+    author: async (parent, args, context) => {
+      try {
+        const user = await parent.getUser();
+        return user.author;
+      } catch (error) {
+        throw new GraphQLError(error.message);
+      }
+    },
+    tags: async (parent, args, context) => {
       try {
         return await parent.getNovelTags();
       } catch (error) {
@@ -60,7 +141,7 @@ const novelResolver = {
         throw new GraphQLError(error.message);
       }
     },
-    total_badges: async (parent, args, context) => {
+    badges: async (parent, args, context) => {
       try {
         const badgesCount = await parent.countOfficialBadges();
         return badgesCount;
@@ -68,7 +149,7 @@ const novelResolver = {
         throw new GraphQLError(error.message);
       }
     },
-    total_likes: async (parent, args, context) => {
+    likes: async (parent, args, context) => {
       try {
         const userLikeCount = await parent.countUserLikeNovels();
         return userLikeCount;
@@ -76,7 +157,7 @@ const novelResolver = {
         throw new GraphQLError(error.message);
       }
     },
-    total_bookmarks: async (parent, args, context) => {
+    bookmarks: async (parent, args, context) => {
       try {
         const userLikeCount = await parent.countUserBookmarkNovels();
         return userLikeCount;

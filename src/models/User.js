@@ -39,6 +39,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(128),
         allowNull: false,
       },
+      // author: {
+      //   type: DataTypes.STRING(128),
+      //   allowNull: false,
+      // },
       s3_url: {
         type: DataTypes.STRING(2048),
         allowNull: false,
