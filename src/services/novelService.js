@@ -1,6 +1,7 @@
 const { GraphQLError } = require("graphql");
-const { Novel } = require("../models");
+const { Novel, sequelize,User } = require("../models");
 const { Op } = require("sequelize");
+const { includes } = require("../graphql/schemas/index.schema");
 class NovelService {
   static async get(args) {
     try {
@@ -21,34 +22,39 @@ class NovelService {
 
   static async paginate(parent, args, context) {
     try {
-      const { page, limit, filter } = args;
+      const { page, limit, filter, type } = args;
       const { user } = context;
 
       if (!user) {
         return null;
       }
+
       const whereCondition = {
         title: {
           [Op.like]: `%${filter?.searchValue ?? ""}%`,
         },
       };
 
-      // const filtersRoundType = [
-      //   { key: `isColiseum`, value: 1 },
-      //   { key: `isLeageMatch`, value: 2 },
-      // ];
+      let order = [];
+      switch (type) {
+        case "new":
+          order = [["first_novel_publish_at", "DESC"]];
+          break;
+        case "hot":
+          const twoHoursAgo = new Date();
+          break;
+        case "weekly":
+          break;
+        default:
+          break;
+      }
 
-      // filtersRoundType.forEach(({ key, value }) => {
-      //   if (filter[key] === true) {
-      //     whereCondition.round_type = whereCondition.round_type
-      //       ? [...whereCondition.round_type, value]
-      //       : [value];
-      //   }
-      // });
+
 
       const offset = (page - 1) * limit;
       const { count, rows } = await Novel.findAndCountAll({
         where: whereCondition,
+        order,
         offset,
         limit,
       });

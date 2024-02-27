@@ -5,6 +5,8 @@ const novelSchema = gql`
     novel_ulid: String
     user_id: Int
     user: User
+    likeCount: Int
+    author: String
     title: String
     synopsis: String
     cover_picture_url: String
@@ -19,20 +21,31 @@ const novelSchema = gql`
     is_completed: Boolean
     is_comment: Boolean
     is_comment_publish: Boolean
-    novel_tag: [OfficialTag]
+    tags: [OfficialTag]
     novel_badges: [OfficialBadge]
     novel_comments: [NovelComment]
     first_novel_publish_at: DateTime
     first_name_publish_at: DateTime
     first_completed_at: DateTime
-    total_likes: Int
-    total_badges: Int
-    total_bookmarks: Int
+    likes: Int
+    badges: Int
+    bookmarks: Int
+    comments: Int
+    episode_count: Int
     user_like: [Int]
     user_bookmarks: [Int]
+    rank: Rank
     created_at: DateTime
     updated_at: DateTime
     deleted_at: DateTime
+  }
+  type Rank {
+    hot: Int
+    daily: Int
+    weekly: Int
+    monthly: Int
+    quarterly: Int
+    yearly: Int
   }
   input NovelInput {
     novel_ulid: String
@@ -55,6 +68,20 @@ const novelSchema = gql`
     first_name_publish_at: String
     first_completed_at: String
   }
+  
+  type NovelFake{
+    novel_id: Int
+    novel_ulid: String
+    likeCount: Int
+    user_like: [User]
+    title: String
+    synopsis: String
+    cover_picture_url: String
+    foreword_url: String
+    afterword_url: String
+    setting_url: String
+    note_url: String
+  }
 
   type NovelPagination {
     novels: [Novel!]
@@ -63,8 +90,9 @@ const novelSchema = gql`
     currentPage: Int
   }
 
-  input filterNovel {
+  input FilterNovel {
     searchValue: String
+    type: String
   }
 
   type UserLikeNovelResponse implements MutationResponse {
@@ -74,8 +102,7 @@ const novelSchema = gql`
     likedCount: Int
     isFavorite: Boolean
   }
-  
-  
+
   type UserBookmarkNovelResponse implements MutationResponse {
     success: Boolean!
     message: String!
@@ -84,12 +111,14 @@ const novelSchema = gql`
 
   type Query {
     novel(novel_id: Int!): Novel
+    novelsOrderBytime(type: String): [NovelFake]
     novels: [Novel]
     novelsByAuthor(userId: Int!): [Novel]
     getNovelsPaginate(
       page: Int
       limit: Int
-      filter: filterNovel
+      filter: FilterNovel
+      type: String
     ): NovelPagination
   }
 
