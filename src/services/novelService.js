@@ -129,6 +129,10 @@ class NovelService {
             model: Episode,
             as: "episodes",
           },
+          {
+            model: User,
+            as: "userBookmarkNovels",
+          },
         ],
         where: whereCondition,
         order,
@@ -157,8 +161,8 @@ class NovelService {
         novel_id: novel.novel_id,
         user: novel.Users,
         user_like: novel.userLikeNovels,
+        user_bookmarks: novel.userBookmarkNovels,
         novel_badges: novel.novelBadges,
-
         created_at: format(
           new Date(novel.first_novel_publish_at),
           "yyyy-MM-dd hh:mm:ii"
