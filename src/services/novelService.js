@@ -49,7 +49,7 @@ class NovelService {
         timeFilter = subDays(currentTime, 365);
         break;
       case "cumulative":
-        timeFilter = subDays(currentTime, 2);
+        timeFilter = null;
         break;
       default:
         break;
@@ -63,9 +63,9 @@ class NovelService {
       const { user } = context;
       const currentTime = new Date();
 
-      if (!user) {
-        return null;
-      }
+      // if (!user) {
+      //   return null;
+      // }
 
       const whereCondition = {
         title: {
@@ -135,10 +135,12 @@ class NovelService {
           },
         ],
         where: whereCondition,
+        nest:true,
         order,
         offset,
         limit,
       });
+      console.log(novels);
 
       const totalNovels = await Novel.count();
 
@@ -160,7 +162,7 @@ class NovelService {
         episode_count: novel.episodes.length,
         novel_id: novel.novel_id,
         user: novel.Users,
-        user_like: novel.userLikeNovels,
+        user_likes: novel.userLikeNovels,
         user_bookmarks: novel.userBookmarkNovels,
         novel_badges: novel.novelBadges,
         created_at: format(

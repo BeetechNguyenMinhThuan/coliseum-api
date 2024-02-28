@@ -65,7 +65,7 @@ const novelSchema = gql`
     is_completed: Boolean
     rank: Rank
     user_likes: [User]
-    user_bookmarks:[User]
+    user_bookmarks: [User]
     created_at: DateTime
     badges: [OfficialBadge]
     tags: [OfficialTag]
@@ -121,7 +121,6 @@ const novelSchema = gql`
 
   type Query {
     novel(novel_id: Int!): Novel
-    novelsOrderBytime(type: String): [NovelList]
     novels: [Novel]
     novelsByAuthor(userId: Int!): [Novel]
     getNovelsPaginate(

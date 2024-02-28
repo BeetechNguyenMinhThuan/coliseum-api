@@ -1,5 +1,11 @@
 const { GraphQLError } = require("graphql");
-const { Novel, UserLike, UserBookmark, User } = require("../../models");
+const {
+  Novel,
+  UserLike,
+  UserBookmark,
+  User,
+  sequelize,
+} = require("../../models");
 const { Op } = require("sequelize");
 const moment = require("moment-timezone");
 const NovelService = require("../../services/novelService");
@@ -32,76 +38,6 @@ const novelResolver = {
     novelsByAuthor: async (parent, args, context) => {
       const res = await NovelService.paginate(parent, args, context);
       return res;
-    },
-    novelsOrderBytime: async (parent, args, context) => {
-      const currentTime = new Date();
-      const { type } = args;
-      try {
-        let timeFilter = "";
-        switch (type) {
-          case "new":
-            order = [["first_novel_publish_at", "DESC"]];
-            break;
-          case "hot":
-            timeFilter = subHours(currentTime, 2);
-            break;
-          case "weekly":
-            timeFilter = subDays(currentTime, 7);
-            break;
-          case "monthly":
-            timeFilter = subDays(currentTime, 30);
-            break;
-          case "quarterly":
-            timeFilter = subDays(currentTime, 90);
-            break;
-          case "yearly":
-            timeFilter = subDays(currentTime, 365);
-            break;
-          case "cumulative":
-            timeFilter = subDays(currentTime, 2);
-            break;
-          default:
-            break;
-        }
-
-        const novels = await Novel.findAll({
-          include: [
-            {
-              model: User,
-              as: "userLikeNovels",
-              through: {
-                model: UserLike,
-                where: {
-                  created_at: {
-                    [Op.between]: [timeFilter, currentTime],
-                  },
-                },
-              },
-            },
-          ],
-          // where: {
-          //   created_at: {
-          //     [Op.between]: [timeFilter, currentTime],
-          //   },
-          // },
-        });
-
-        novels.sort((novelA, novelB) => {
-          return novelB.userLikeNovels.length - novelA.userLikeNovels.length;
-        });
-        
-        const novelsWithUser = novels.map((novel) => ({
-          novel_id: novel.novel_id,
-          likeCount: novel.userLikeNovels.length,
-          title: novel.title,
-          user_like: novel.userLikeNovels,
-        }));
-        
-        return novelsWithUser;
-      } catch (error) {
-        console.log(error);
-        throw new Error("Failed to fetch novels likes");
-      }
     },
   },
   Novel: {
