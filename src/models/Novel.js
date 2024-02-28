@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       OfficialTag,
       OfficialBadge,
       NovelComment,
+      Episode
     }) {
       this.belongsToMany(User, {
         through: "UserLike",
@@ -34,7 +35,8 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "novel_id",
         as: "novelBadges",
       });
-      this.hasMany(NovelComment, { foreignKey: "novel_id" });
+      this.hasMany(NovelComment, { foreignKey: "novel_id",  as: "novelComments" });
+      this.hasMany(Episode, { foreignKey: "novel_id",  as: "episodes" });
 
       this.belongsTo(User, { foreignKey: "user_id", as: "Users" });
     }

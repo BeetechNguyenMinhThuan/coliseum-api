@@ -5,6 +5,8 @@ const {
   User,
   OfficialBadge,
   OfficialTag,
+  NovelComment,
+  Episode,
   Sequelize,
 } = require("../models");
 const { Op } = require("sequelize");
@@ -93,7 +95,7 @@ class NovelService {
       }
 
       const offset = (page - 1) * limit;
-      const { count, rows: novels } = await Novel.findAndCountAll({
+      const novels = await Novel.findAll({
         include: [
           {
             model: User,
@@ -116,8 +118,16 @@ class NovelService {
             as: "novelTags",
           },
           {
+            model: NovelComment,
+            as: "novelComments",
+          },
+          {
             model: User,
             as: "userBookmarkNovels",
+          },
+          {
+            model: Episode,
+            as: "episodes",
           },
         ],
         where: whereCondition,
@@ -126,22 +136,39 @@ class NovelService {
         limit,
       });
 
+      const totalNovels = await Novel.count();
+
       const novelsNew = novels.map((novel) => ({
-        novel_id: novel.novel_id,
-        user: novel.Users,
+        novel_ulid: novel.novel_ulid,
+        title: novel.title,
+        synopsis: novel.synopsis,
+        cover_picture_url: novel.cover_picture_url,
+        user_uuid: novel.Users.user_uuid,
+        author: novel.author,
+        first_novel_publish_at: format(
+          new Date(novel.first_novel_publish_at),
+          "yyyy-MM-dd hh:mm:ii"
+        ),
         likes: novel.userLikeNovels.length,
         bookmarks: novel.userBookmarkNovels.length,
-        title: novel.title,
+        comments: novel.novelComments.length,
+        is_completed: novel.is_completed,
+        episode_count: novel.episodes.length,
+        novel_id: novel.novel_id,
+        user: novel.Users,
         user_like: novel.userLikeNovels,
         novel_badges: novel.novelBadges,
-        synopsis: novel.synopsis,
-        created_at: format(new Date(novel.created_at),'yyyy-MM-dd hh:mm:ii')
+
+        created_at: format(
+          new Date(novel.first_novel_publish_at),
+          "yyyy-MM-dd hh:mm:ii"
+        ),
       }));
 
       return {
         novels: novelsNew,
-        totalItems: count,
-        totalPages: Math.ceil(count / limit),
+        totalItems: totalNovels,
+        totalPages: Math.ceil(totalNovels / limit),
         currentPage: page,
       };
     } catch (error) {
