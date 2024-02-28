@@ -36,5 +36,5 @@ const matchSchema = gql`
 `
 
 module.exports = {
-    matchSchema: matchSchema,
+    matchSchema,
 };
