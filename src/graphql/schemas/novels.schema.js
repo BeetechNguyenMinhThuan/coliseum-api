@@ -45,7 +45,31 @@ const novelSchema = gql`
     monthly: Int
     quarterly: Int
     yearly: Int
+    cumulative: Int
   }
+
+  type NovelList {
+    novel_id: Int
+    novel_ulid: String
+    title: String
+    synopsis: String
+    cover_picture_url: String
+    user_uuid: String
+    author: String
+    first_novel_publish_at: DateTime
+    max_updated_at: String
+    episode_count: Int
+    likes: Int
+    bookmarks: Int
+    comments: Int
+    is_completed: Boolean
+    rank: Rank
+    user_like: [User]
+    created_at: DateTime
+    badges: [OfficialBadge]
+    tags: [OfficialTag]
+  }
+
   input NovelInput {
     novel_ulid: String
     user_id: Int
@@ -68,26 +92,8 @@ const novelSchema = gql`
     first_completed_at: String
   }
 
-  type NovelFake {
-    novel_id: Int
-    novel_ulid: String
-    user: User
-    likes: Int
-    bookmarks: Int
-    user_like: [User]
-    created_at: DateTime
-    novel_badges: [OfficialBadge]
-    title: String
-    synopsis: String
-    cover_picture_url: String
-    foreword_url: String
-    afterword_url: String
-    setting_url: String
-    note_url: String
-  }
-
   type NovelPagination {
-    novels: [NovelFake!]
+    novels: [NovelList!]
     totalItems: Int
     totalPages: Int
     currentPage: Int
@@ -114,7 +120,7 @@ const novelSchema = gql`
 
   type Query {
     novel(novel_id: Int!): Novel
-    novelsOrderBytime(type: String): [NovelFake]
+    novelsOrderBytime(type: String): [NovelList]
     novels: [Novel]
     novelsByAuthor(userId: Int!): [Novel]
     getNovelsPaginate(
