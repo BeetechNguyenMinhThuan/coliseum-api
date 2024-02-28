@@ -64,7 +64,8 @@ const novelSchema = gql`
     comments: Int
     is_completed: Boolean
     rank: Rank
-    user_like: [User]
+    user_likes: [User]
+    user_bookmarks:[User]
     created_at: DateTime
     badges: [OfficialBadge]
     tags: [OfficialTag]
