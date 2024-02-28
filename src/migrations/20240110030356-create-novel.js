@@ -1,22 +1,24 @@
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('novels', {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable("novels", {
       novel_id: {
         allowNull: false,
         type: Sequelize.INTEGER,
         primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true,
       },
       novel_ulid: {
         type: Sequelize.CHAR(16),
         allowNull: false,
-        // autoIncrement: true
       },
       user_id: {
         type: Sequelize.INTEGER,
+      },
+      author: {
+        type: Sequelize.STRING(128),
       },
       title: {
         type: Sequelize.STRING(256),
@@ -44,37 +46,31 @@ module.exports = {
       },
       is_anonymous: {
         type: Sequelize.BOOLEAN,
-        defaultValue: false
+        defaultValue: false,
       },
 
       is_publish: {
         type: Sequelize.BOOLEAN,
-        defaultValue: false
-
+        defaultValue: false,
       },
       is_ranking_visble: {
         type: Sequelize.BOOLEAN,
-        defaultValue: true
-
+        defaultValue: true,
       },
       is_completed: {
         type: Sequelize.BOOLEAN,
-        defaultValue: false
-
+        defaultValue: false,
       },
       is_comment: {
         type: Sequelize.BOOLEAN,
-        defaultValue: true
-
+        defaultValue: true,
       },
       is_comment_publish: {
         type: Sequelize.BOOLEAN,
-        defaultValue: true
-
+        defaultValue: true,
       },
       first_novel_publish_at: {
         type: Sequelize.DATE,
-
       },
       first_name_publish_at: {
         type: Sequelize.DATE,
@@ -83,21 +79,21 @@ module.exports = {
         type: Sequelize.DATE,
       },
       created_at: {
-        allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+      },
+      badges_id: {
+        type: Sequelize.INTEGER,
       },
       updated_at: {
-        allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       deleted_at: {
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('novels');
-
-  }
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable("novels");
+  },
 };
