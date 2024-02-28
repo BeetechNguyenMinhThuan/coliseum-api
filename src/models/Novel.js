@@ -32,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsToMany(OfficialBadge, {
         through: "NovelBadge",
         foreignKey: "novel_id",
+        as: "novelBadges",
       });
       this.hasMany(NovelComment, { foreignKey: "novel_id" });
 
@@ -57,8 +58,14 @@ module.exports = (sequelize, DataTypes) => {
       title: {
         type: DataTypes.STRING(256),
       },
+      author: {
+        type: DataTypes.STRING(128),
+      },
       synopsis: {
         type: DataTypes.TEXT,
+      },
+      badges_id: {
+        type: DataTypes.INTEGER,
       },
       cover_picture_url: {
         type: DataTypes.STRING(2048),

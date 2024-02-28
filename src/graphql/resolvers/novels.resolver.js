@@ -107,7 +107,7 @@ const novelResolver = {
   Novel: {
     user: async (parent, args, context) => {
       try {
-        return await parent.getUser();
+        return await parent.getUsers();
       } catch (error) {
         throw new GraphQLError(error.message);
       }

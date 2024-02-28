@@ -18,6 +18,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         primaryKey: true,
       },
+      read_at: {
+        type: DataTypes.DATE,
+      },
+      episode_id: {
+        type: DataTypes.INTEGER,
+      },
     },
     {
       sequelize,

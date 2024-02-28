@@ -5,7 +5,6 @@ const novelSchema = gql`
     novel_ulid: String
     user_id: Int
     user: User
-    likeCount: Int
     author: String
     title: String
     synopsis: String
@@ -68,12 +67,16 @@ const novelSchema = gql`
     first_name_publish_at: String
     first_completed_at: String
   }
-  
-  type NovelFake{
+
+  type NovelFake {
     novel_id: Int
     novel_ulid: String
-    likeCount: Int
+    user: User
+    likes: Int
+    bookmarks: Int
     user_like: [User]
+    created_at: DateTime
+    novel_badges: [OfficialBadge]
     title: String
     synopsis: String
     cover_picture_url: String
@@ -84,7 +87,7 @@ const novelSchema = gql`
   }
 
   type NovelPagination {
-    novels: [Novel!]
+    novels: [NovelFake!]
     totalItems: Int
     totalPages: Int
     currentPage: Int
