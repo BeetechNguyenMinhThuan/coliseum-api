@@ -100,6 +100,7 @@ class NovelService {
           "novel_id",
           "is_completed",
           "title",
+          "synopsis",
           "first_novel_publish_at",
           "cover_picture_url",
           "author",
