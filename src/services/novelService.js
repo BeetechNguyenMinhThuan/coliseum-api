@@ -181,6 +181,7 @@ class NovelService {
             where: whereConditionTimeFilter,
           },
         }),
+        user_bookmarks: novel.getUserBookmarkNovels(),
       }));
 
       return {
