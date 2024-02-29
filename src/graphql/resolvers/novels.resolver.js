@@ -35,8 +35,8 @@ const novelResolver = {
       const res = await NovelService.paginate(parent, args, context);
       return res;
     },
-    novelsByAuthor: async (parent, args, context) => {
-      const res = await NovelService.paginate(parent, args, context);
+    getNovelsByAuthor: async (parent, args, context) => {
+      const res = await NovelService.getListNovelByAuthor(parent, args, context);
       return res;
     },
   },
@@ -50,7 +50,7 @@ const novelResolver = {
     },
     author: async (parent, args, context) => {
       try {
-        const user = await parent.getUser();
+        const user = await parent.getUsers();
         return user.author;
       } catch (error) {
         throw new GraphQLError(error.message);
@@ -65,7 +65,7 @@ const novelResolver = {
     },
     novel_badges: async (parent, args, context) => {
       try {
-        return await parent.getOfficialBadges();
+        return await parent.getNovelBadges();
       } catch (error) {
         throw new GraphQLError(error.message);
       }
@@ -79,7 +79,7 @@ const novelResolver = {
     },
     badges: async (parent, args, context) => {
       try {
-        const badgesCount = await parent.countOfficialBadges();
+        const badgesCount = await parent.countNovelBadges();
         return badgesCount;
       } catch (error) {
         throw new GraphQLError(error.message);

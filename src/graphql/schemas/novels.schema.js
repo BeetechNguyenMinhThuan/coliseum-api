@@ -1,4 +1,5 @@
 const { gql } = require("graphql-tag");
+
 const novelSchema = gql`
   type Novel {
     novel_id: Int
@@ -56,6 +57,7 @@ const novelSchema = gql`
     cover_picture_url: String
     user_uuid: String
     author: String
+    user: User
     first_novel_publish_at: DateTime
     max_updated_at: String
     episode_count: Int
@@ -122,7 +124,7 @@ const novelSchema = gql`
   type Query {
     novel(novel_id: Int!): Novel
     novels: [Novel]
-    novelsByAuthor(userId: Int!): [Novel]
+    getNovelsByAuthor(userId: Int!, page: Int, limit: Int): NovelPagination
     getNovelsPaginate(
       page: Int
       limit: Int
