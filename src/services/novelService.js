@@ -214,7 +214,7 @@ class NovelService {
           "cover_picture_url",
           "author",
         ],
-      
+
         where: { is_publish: 1, user_id: userId },
         limit,
         offset,
@@ -244,6 +244,7 @@ class NovelService {
         tags: novel.getNovelTags(),
         badges: novel.getNovelBadges(),
         user_likes: novel.getUserLikeNovels(),
+        user_bookmarks: novel.getUserBookmarkNovels(),
       }));
 
       return {
