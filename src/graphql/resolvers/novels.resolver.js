@@ -3,14 +3,11 @@ const {
   Novel,
   UserLike,
   UserBookmark,
-  User,
-  sequelize,
+  Episode,
+  Event,
 } = require("../../models");
-const { Op } = require("sequelize");
-const moment = require("moment-timezone");
 const NovelService = require("../../services/novelService");
-const { format, subDays } = require("date-fns");
-const { subHours } = require("date-fns");
+const { includes } = require("./index.resolver");
 const novelResolver = {
   Query: {
     novels: async (parent, args, context) => {
@@ -24,9 +21,21 @@ const novelResolver = {
       try {
         const { novel_id } = args;
 
-        return await Novel.findOne({
+        const novel = await Novel.findOne({
+          include: [
+            {
+              model: Episode,
+              as: "episodes",
+            },
+            // {
+            //   model: Event,
+            //   as: "eventParticipants",
+            // },
+          ],
           where: { novel_id: novel_id },
         });
+        console.log(novel);
+        return novel;
       } catch (error) {
         throw new GraphQLError(error.message);
       }
@@ -36,7 +45,11 @@ const novelResolver = {
       return res;
     },
     getNovelsByAuthor: async (parent, args, context) => {
-      const res = await NovelService.getListNovelByAuthor(parent, args, context);
+      const res = await NovelService.getListNovelByAuthor(
+        parent,
+        args,
+        context
+      );
       return res;
     },
   },
