@@ -15,6 +15,7 @@ const {
 const { Op } = require("sequelize");
 const { subHours, subDays, format } = require("date-fns");
 const { required } = require("joi");
+const { raw } = require("mysql2");
 class NovelService {
   static async get(args) {
     try {
@@ -61,6 +62,94 @@ class NovelService {
     return timeFilter;
   }
 
+  static async getFilterNovelByLatest(page, limit, whereCondition) {
+    const offset = (page - 1) * limit;
+    const { count, rows: episodes } = await Episode.findAndCountAll({
+      attributes: ["novel_id", "publish_at", "order"],
+      include: [
+        {
+          model: Novel,
+          as: "Novels",
+          attributes: [
+            "novel_ulid",
+            "novel_id",
+            "is_completed",
+            "title",
+            "synopsis",
+            "first_novel_publish_at",
+            "cover_picture_url",
+            "author",
+            [
+              sequelize.literal(
+                "(SELECT publish_at FROM episodes WHERE episodes.novel_id = Novels.novel_id AND episodes.`order` = 1)"
+              ),
+              "max_updated_at",
+            ],
+          ],
+          where: {
+            ...whereCondition,
+            is_publish: 1,
+          },
+          required: true,
+          include: [
+            {
+              model: User,
+              as: "Users",
+            },
+          ],
+        },
+      ],
+      where: {
+        order: sequelize.literal(
+          "`order`= (SELECT max(`order`) FROM episodes AS max_episode WHERE max_episode.novel_id = Episode.novel_id)"
+        ),
+      },
+      order: [["publish_at", "DESC"]],
+      limit,
+      offset,
+    });
+    const totalNovels = count;
+    const novelsNew = episodes.map((episode) => ({
+      novel_ulid: episode.Novels.novel_ulid,
+      title: episode.Novels.title,
+      novel_id: episode.Novels.novel_id,
+      synopsis: episode.Novels.synopsis,
+      cover_picture_url: episode.Novels.cover_picture_url,
+      is_completed: episode.Novels.is_completed,
+      author: episode.Novels.author,
+      user_uuid: episode.Novels.Users.user_uuid,
+      first_novel_publish_at: format(
+        new Date(episode.Novels.first_novel_publish_at),
+        "yyyy-MM-dd HH:mm:ss"
+      ),
+      max_updated_at: format(
+        new Date(episode.Novels.dataValues.max_updated_at),
+        "yyyy-MM-dd HH:mm:ss"
+      ),
+      episode_count: episode.Novels.countEpisodes(),
+      likes: episode.Novels.countUserLikeNovels(),
+      comments: episode.Novels.countNovelComments(),
+      bookmarks: episode.Novels.countUserBookmarkNovels(),
+      user: episode.Novels.Users,
+      tags: episode.Novels.getNovelTags(),
+      badges: episode.Novels.getNovelBadges(),
+      user_likes: episode.Novels.getUserLikeNovels({
+        through: {
+          model: UserLike,
+          attributes: [],
+        },
+      }),
+      user_bookmarks: episode.Novels.getUserBookmarkNovels(),
+    }));
+
+    return {
+      novels: novelsNew,
+      totalItems: totalNovels,
+      totalPages: Math.ceil(totalNovels / limit),
+      currentPage: page,
+    };
+  }
+
   static async paginate(parent, args, context) {
     try {
       const { page, limit, filter, type } = args;
@@ -80,6 +169,8 @@ class NovelService {
 
       if (type === "new") {
         order.push(["first_novel_publish_at", "DESC"]);
+      } else if (type === "latest") {
+        return this.getFilterNovelByLatest(page, limit, whereCondition);
       }
 
       let timeFilter = await this.getTimeFilter(type);
@@ -162,11 +253,11 @@ class NovelService {
         user_uuid: novel.Users.user_uuid,
         first_novel_publish_at: format(
           new Date(novel.first_novel_publish_at),
-          "yyyy-MM-dd HH:mm:ii"
+          "yyyy-MM-dd HH:mm:ss"
         ),
         max_updated_at: format(
           new Date(novel.dataValues.max_updated_at),
-          "yyyy-MM-dd HH:mm:ii"
+          "yyyy-MM-dd HH:mm:ss"
         ),
         episode_count: novel.countEpisodes(),
         likes: novel.dataValues.likes,
