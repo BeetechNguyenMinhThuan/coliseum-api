@@ -135,9 +135,7 @@ class NovelService {
     try {
       const { page, limit, filter, type } = args;
       const { user } = context;
-      if (!user) {
-        return null;
-      }
+     
       const currentTime = new Date();
       let whereCondition = {};
       let order = [];
