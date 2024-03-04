@@ -32,6 +32,7 @@ const novelSchema = gql`
     bookmarks: Int
     comments: Int
     episode_count: Int
+    episodes: [Episode]
     user_like: [Int]
     user_bookmarks: [Int]
     rank: Rank

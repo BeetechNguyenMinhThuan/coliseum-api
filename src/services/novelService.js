@@ -1,21 +1,7 @@
 const { GraphQLError } = require("graphql");
-const {
-  Novel,
-  UserLike,
-  User,
-  OfficialBadge,
-  OfficialTag,
-  UserBookmark,
-  NovelComment,
-  NovelBadge,
-  Episode,
-  NovelTag,
-  sequelize,
-} = require("../models");
+const { Novel, UserLike, User, Episode, sequelize } = require("../models");
 const { Op } = require("sequelize");
 const { subHours, subDays, format } = require("date-fns");
-const { required } = require("joi");
-const { raw } = require("mysql2");
 class NovelService {
   static async get(args) {
     try {
@@ -108,7 +94,7 @@ class NovelService {
       limit,
       offset,
     });
-    const totalNovels = count;
+    
     const novelsNew = episodes.map((episode) => ({
       novel_ulid: episode.Novels.novel_ulid,
       title: episode.Novels.title,
@@ -133,19 +119,14 @@ class NovelService {
       user: episode.Novels.Users,
       tags: episode.Novels.getNovelTags(),
       badges: episode.Novels.getNovelBadges(),
-      user_likes: episode.Novels.getUserLikeNovels({
-        through: {
-          model: UserLike,
-          attributes: [],
-        },
-      }),
+      user_likes: episode.Novels.getUserLikeNovels(),
       user_bookmarks: episode.Novels.getUserBookmarkNovels(),
     }));
 
     return {
       novels: novelsNew,
-      totalItems: totalNovels,
-      totalPages: Math.ceil(totalNovels / limit),
+      totalItems: count,
+      totalPages: Math.ceil(count / limit),
       currentPage: page,
     };
   }
