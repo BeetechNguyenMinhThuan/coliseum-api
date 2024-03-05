@@ -123,7 +123,7 @@ const novelSchema = gql`
   }
 
   type Query {
-    novel(novel_id: Int!): Novel
+    novel(novel_id: Int!, type: String): NovelList
     novels: [Novel]
     getNovelsByAuthor(userId: Int!, page: Int, limit: Int): NovelPagination
     getNovelsPaginate(
@@ -139,7 +139,7 @@ const novelSchema = gql`
     updateNovel(novel_id: Int!, input: NovelInput!): Novel
     deleteNovel(novel_id: Int!): String
     toggleUserLike(novelId: Int!): UserLikeNovelResponse
-    toggleUserBookmark(novelId: Int!): UserBookmarkNovelResponse
+    toggleUserBookmark(novelId: Int!, episodeId: Int): UserBookmarkNovelResponse
   }
 `;
 

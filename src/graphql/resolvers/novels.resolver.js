@@ -1,13 +1,6 @@
 const { GraphQLError } = require("graphql");
-const {
-  Novel,
-  UserLike,
-  UserBookmark,
-  Episode,
-  Event,
-} = require("../../models");
+const { Novel, UserLike, UserBookmark } = require("../../models");
 const NovelService = require("../../services/novelService");
-const { includes } = require("./index.resolver");
 const novelResolver = {
   Query: {
     novels: async (parent, args, context) => {
@@ -19,22 +12,8 @@ const novelResolver = {
     },
     novel: async (parent, args, context) => {
       try {
-        const { novel_id } = args;
-
-        const novel = await Novel.findOne({
-          include: [
-            {
-              model: Episode,
-              as: "episodes",
-            },
-            // {
-            //   model: Event,
-            //   as: "eventParticipants",
-            // },
-          ],
-          where: { novel_id: novel_id },
-        });
-        console.log(novel);
+        const { novel_id, type } = args;
+        const novel = await NovelService.getDetailNovel(novel_id, type);
         return novel;
       } catch (error) {
         throw new GraphQLError(error.message);
@@ -251,7 +230,7 @@ const novelResolver = {
     },
     toggleUserBookmark: async (_, args, context) => {
       try {
-        const { novelId } = args;
+        const { novelId, episodeId } = args;
         const { user } = context.user;
         const userId = user.id;
         const existingBookmark = await UserBookmark.findOne({
