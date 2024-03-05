@@ -59,10 +59,13 @@ const novelSchema = gql`
     user_uuid: String
     author: String
     user: User
+    is_publish: Boolean
+    is_ranking_visible: Boolean
     first_novel_publish_at: DateTime
     max_updated_at: String
     episode_count: Int
     likes: Int
+    episodes: [Episode]
     bookmarks: Int
     comments: Int
     is_completed: Boolean
@@ -70,6 +73,7 @@ const novelSchema = gql`
     user_likes: [User]
     user_bookmarks: [User]
     created_at: DateTime
+    updated_at: DateTime
     badges: [OfficialBadge]
     tags: [OfficialTag]
   }
