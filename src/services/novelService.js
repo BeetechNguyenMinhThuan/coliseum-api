@@ -158,6 +158,9 @@ class NovelService {
         "first_novel_publish_at",
         "cover_picture_url",
         "author",
+        "is_publish",
+        "created_at",
+        "updated_at",
         [
           sequelize.literal(
             "(SELECT publish_at FROM episodes WHERE episodes.novel_id = Novel.novel_id AND episodes.`order` = 1)"
@@ -173,12 +176,6 @@ class NovelService {
         ],
       ],
       include: [
-        {
-          model: Episode,
-          as: "episodes",
-          attributes: [],
-          required: false, // inner join (true when search, false not search)
-        },
         {
           model: User,
           as: "userLikeNovels",
@@ -213,14 +210,8 @@ class NovelService {
       is_completed: novel.is_completed,
       author: novel.author,
       user_uuid: novel.Users.user_uuid,
-      first_novel_publish_at: format(
-        new Date(novel.first_novel_publish_at),
-        "yyyy-MM-dd HH:mm:ss"
-      ),
-      max_updated_at: format(
-        new Date(novel.dataValues.max_updated_at),
-        "yyyy-MM-dd HH:mm:ss"
-      ),
+      first_novel_publish_at: novel.first_novel_publish_at,
+      max_updated_at: novel.dataValues.max_updated_at,
       episode_count: novel.countEpisodes(),
       likes: novel.dataValues.likes,
       comments: novel.countNovelComments(),
@@ -239,6 +230,10 @@ class NovelService {
       rank: {
         [type]: rank,
       },
+      episodes: novel.getEpisodes(),
+      is_publish: novel.is_publish,
+      updated_at: novel.updated_at,
+      created_at: novel.created_at,
     };
   }
 
