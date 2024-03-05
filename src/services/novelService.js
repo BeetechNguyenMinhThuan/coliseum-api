@@ -1,7 +1,8 @@
 const { GraphQLError } = require("graphql");
 const { Novel, UserLike, User, Episode, sequelize } = require("../models");
 const { Op } = require("sequelize");
-const { subHours, subDays, format } = require("date-fns");
+const { subHours, subDays, format, startOfDay } = require("date-fns");
+const moment = require("moment");
 class NovelService {
   static async get(args) {
     try {
@@ -19,33 +20,43 @@ class NovelService {
       throw new GraphQLError(error.message);
     }
   }
-
   static async getTimeFilter(type) {
     let timeFilter = null;
     const currentTime = new Date();
+    let startOfDay,
+      endOfDay = "";
     switch (type) {
       case "hot":
         timeFilter = subHours(currentTime, 2);
         break;
+      case "daily":
+        startOfDay = moment().subtract(1, "days").startOf("day");
+        endOfDay = moment().subtract(1, "days").endOf("day");
+        break;
       case "weekly":
-        timeFilter = subDays(currentTime, 7);
+        startOfDay = moment().subtract(7, "days").startOf("day");
+        endOfDay = moment().subtract(7, "days").endOf("day");
         break;
       case "monthly":
-        timeFilter = subDays(currentTime, 30);
+        startOfDay = moment().subtract(30, "days").startOf("day");
+        endOfDay = moment().subtract(30, "days").endOf("day");
         break;
       case "quarterly":
-        timeFilter = subDays(currentTime, 90);
+        startOfDay = moment().subtract(90, "days").startOf("day");
+        endOfDay = moment().subtract(90, "days").endOf("day");
         break;
       case "yearly":
-        timeFilter = subDays(currentTime, 365);
+        startOfDay = moment().subtract(365, "days").startOf("day");
+        endOfDay = moment().subtract(365, "days").endOf("day");
         break;
       case "cumulative":
-        timeFilter = "cumulative";
+        startOfDay = "";
+        endOfDay = "";
         break;
       default:
         break;
     }
-    return timeFilter;
+    return { startOfDay, endOfDay };
   }
 
   static async getFilterNovelByLatest(page, limit, whereCondition) {
@@ -135,16 +146,21 @@ class NovelService {
     if (!type) {
       type = "cumulative";
     }
-    let timeFilter = await this.getTimeFilter(type);
     let whereConditionTimeFilter = null;
-    const currentTime = new Date();
     let order = [];
-    if (timeFilter) {
-      whereConditionTimeFilter = {
-        created_at: {
-          [Op.between]: [timeFilter, currentTime],
-        },
-      };
+
+    // Handle arrange novels
+    if (type === "new") {
+      order.push(["first_novel_publish_at", "DESC"]);
+    } else {
+      let { startOfDay, endOfDay } = await this.getTimeFilter(type);
+      if (startOfDay && endOfDay) {
+        whereConditionTimeFilter = {
+          created_at: {
+            [Op.between]: [startOfDay, endOfDay],
+          },
+        };
+      }
       order.push(["likes", "DESC"]);
     }
 
@@ -242,8 +258,8 @@ class NovelService {
       const { page, limit, filter, type } = args;
       const { user } = context;
 
-      const currentTime = new Date();
       let whereCondition = {};
+      let whereConditionTimeFilter = null;
       let order = [];
 
       if (filter) {
@@ -252,20 +268,20 @@ class NovelService {
         };
       }
 
+      // Handle arrange novels
       if (type === "new") {
         order.push(["first_novel_publish_at", "DESC"]);
       } else if (type === "latest") {
         return this.getFilterNovelByLatest(page, limit, whereCondition);
-      }
-
-      let timeFilter = await this.getTimeFilter(type);
-      let whereConditionTimeFilter = null;
-      if (timeFilter || timeFilter === "cumulative") {
-        whereConditionTimeFilter = {
-          created_at: {
-            [Op.between]: [timeFilter, currentTime],
-          },
-        };
+      } else {
+        let { startOfDay, endOfDay } = await this.getTimeFilter(type);
+        if (startOfDay && endOfDay) {
+          whereConditionTimeFilter = {
+            created_at: {
+              [Op.between]: [startOfDay, endOfDay],
+            },
+          };
+        }
         order.push(["likes", "DESC"]);
       }
 
@@ -327,7 +343,7 @@ class NovelService {
 
       const totalNovels = count.length;
 
-      const novelsNew = novels.map((novel) => ({
+      const novelsNew = novels.map((novel, index) => ({
         novel_ulid: novel.novel_ulid,
         title: novel.title,
         novel_id: novel.novel_id,
@@ -359,6 +375,9 @@ class NovelService {
           },
         }),
         user_bookmarks: novel.getUserBookmarkNovels(),
+        rank: {
+          [type]: index + 1,
+        },
       }));
 
       return {
