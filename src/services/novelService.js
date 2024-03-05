@@ -21,14 +21,9 @@ class NovelService {
     }
   }
   static async getTimeFilter(type) {
-    let timeFilter = null;
-    const currentTime = new Date();
     let startOfDay,
       endOfDay = "";
     switch (type) {
-      case "hot":
-        timeFilter = subHours(currentTime, 2);
-        break;
       case "daily":
         startOfDay = moment().subtract(1, "days").startOf("day");
         endOfDay = moment().subtract(1, "days").endOf("day");
@@ -257,6 +252,7 @@ class NovelService {
     try {
       const { page, limit, filter, type } = args;
       const { user } = context;
+      const currentTime = new Date();
 
       let whereCondition = {};
       let whereConditionTimeFilter = null;
@@ -273,6 +269,13 @@ class NovelService {
         order.push(["first_novel_publish_at", "DESC"]);
       } else if (type === "latest") {
         return this.getFilterNovelByLatest(page, limit, whereCondition);
+      } else if (type === "hot") {
+        whereConditionTimeFilter = {
+          created_at: {
+            [Op.between]: [subHours(currentTime, 2), currentTime],
+          },
+        };
+        order.push(["likes", "DESC"]);
       } else {
         let { startOfDay, endOfDay } = await this.getTimeFilter(type);
         if (startOfDay && endOfDay) {
@@ -282,7 +285,6 @@ class NovelService {
             },
           };
         }
-        order.push(["likes", "DESC"]);
       }
 
       const offset = (page - 1) * limit;
