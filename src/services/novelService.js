@@ -288,6 +288,7 @@ class NovelService {
               [Op.between]: [startOfDay, endOfDay],
             },
           };
+          order.push(["likes", "DESC"]);
         }
       }
 
