@@ -1,6 +1,5 @@
 const { GraphQLError } = require("graphql");
 const jwt = require("jsonwebtoken");
-const { JWT_KEY } = require("../constants/constants");
 const { throwCustomError, ErrorTypes } = require("../heplers/errorHandle");
 const { loginSchema } = require("../validations/auth.validation");
 
@@ -23,8 +22,14 @@ class AuthService {
         throw new GraphQLError("Sai tai khoan hoac mat khau");
       }
       const token = jwt.sign(
-        { id: 1, name: account_id, role: "admin",avatar: "https://suamayin115.vn/img_goc/%E1%BA%A2nh/111.%20tintuc/quna-ly-mau-sac-tren-photoshop-Goldmouse.jpg" },
-        JWT_KEY
+        {
+          id: 1,
+          name: account_id,
+          role: "admin",
+          avatar:
+            "https://suamayin115.vn/img_goc/%E1%BA%A2nh/111.%20tintuc/quna-ly-mau-sac-tren-photoshop-Goldmouse.jpg",
+        },
+        process.env.SECRET_KEY
       );
       return { token };
     } catch (error) {
@@ -33,9 +38,9 @@ class AuthService {
   }
   static decodeJWT(token) {
     try {
-      return jwt.verify(token, JWT_KEY);
+      return jwt.verify(token, process.env.SECRET_KEY);
     } catch (err) {
-      throw new GraphQLError(err)
+      throw new GraphQLError(err);
     }
   }
 }

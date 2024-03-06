@@ -288,8 +288,8 @@ class NovelService {
               [Op.between]: [startOfDay, endOfDay],
             },
           };
-          order.push(["likes", "DESC"]);
         }
+        order.push(["likes", "DESC"]);
       }
 
       const offset = (page - 1) * limit;

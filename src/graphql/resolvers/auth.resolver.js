@@ -1,4 +1,3 @@
-const { JWT_KEY } = require("../../constants/constants");
 const AuthService = require("../../services/authService");
 const authResolver = {
   Query: {

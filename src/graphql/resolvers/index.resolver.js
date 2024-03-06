@@ -12,6 +12,8 @@ const { novelCommentResolver } = require("./novelComment.resolver");
 const { eventCommentResolver } = require("./eventComment.resolver");
 const { commonResolver } = require("./common.resolver");
 const { authResolver } = require("./auth.resolver");
+const { contentSchema } = require("../schemas/content.schema");
+const { contentResolver } = require("./content.resolver");
 
 module.exports = [
   officialTagResolver,
@@ -28,4 +30,5 @@ module.exports = [
   eventCommentResolver,
   authResolver,
   commonResolver,
+  contentResolver
 ];
