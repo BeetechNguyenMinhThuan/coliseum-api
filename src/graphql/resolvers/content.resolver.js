@@ -34,6 +34,7 @@ const contentResolver = {
       } else {
         attributes = [
           "title",
+          "content",
           "publication_start_at",
           "information_type",
           "content_url",
