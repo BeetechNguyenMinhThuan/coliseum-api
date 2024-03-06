@@ -22,7 +22,13 @@ class AuthService {
         throw new GraphQLError("Sai tai khoan hoac mat khau");
       }
       const token = jwt.sign(
-        { id: 1, name: account_id, role: "admin" },
+        {
+          id: 1,
+          name: account_id,
+          role: "admin",
+          avatar:
+            "https://suamayin115.vn/img_goc/%E1%BA%A2nh/111.%20tintuc/quna-ly-mau-sac-tren-photoshop-Goldmouse.jpg",
+        },
         process.env.SECRET_KEY
       );
       return { token };
