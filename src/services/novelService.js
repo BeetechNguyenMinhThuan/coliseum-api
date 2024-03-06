@@ -25,24 +25,28 @@ class NovelService {
       endOfDay = "";
     switch (type) {
       case "daily":
-        startOfDay = moment().subtract(1, "days").startOf("day").format('YYYY-MM-DD HH:mm:ss');
-        endOfDay = moment().subtract(1, "days").endOf("day").format('YYYY-MM-DD HH:mm:ss');
+        startOfDay = moment(new Date(), "days")
+          .startOf("day")
+          .format("YYYY-MM-DD HH:mm:ss");
+        endOfDay = moment(new Date(), "days")
+          .endOf("day")
+          .format("YYYY-MM-DD HH:mm:ss");
         break;
       case "weekly":
         startOfDay = moment().subtract(7, "days").startOf("day");
-        endOfDay = moment().subtract(7, "days").endOf("day");
+        endOfDay = new Date();
         break;
       case "monthly":
         startOfDay = moment().subtract(30, "days").startOf("day");
-        endOfDay = moment().subtract(30, "days").endOf("day");
+        endOfDay = new Date();
         break;
       case "quarterly":
         startOfDay = moment().subtract(90, "days").startOf("day");
-        endOfDay = moment().subtract(90, "days").endOf("day");
+        endOfDay = new Date();
         break;
       case "yearly":
         startOfDay = moment().subtract(365, "days").startOf("day");
-        endOfDay = moment().subtract(365, "days").endOf("day");
+        endOfDay = new Date();
         break;
       case "cumulative":
         startOfDay = "";
