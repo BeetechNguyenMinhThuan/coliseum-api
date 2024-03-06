@@ -1,6 +1,5 @@
 const { GraphQLError } = require("graphql");
 const jwt = require("jsonwebtoken");
-const { JWT_KEY } = require("../constants/constants");
 const { throwCustomError, ErrorTypes } = require("../heplers/errorHandle");
 const { loginSchema } = require("../validations/auth.validation");
 
@@ -24,7 +23,7 @@ class AuthService {
       }
       const token = jwt.sign(
         { id: 1, name: account_id, role: "admin" },
-        JWT_KEY
+        process.env.SECRET_KEY
       );
       return { token };
     } catch (error) {
@@ -33,9 +32,9 @@ class AuthService {
   }
   static decodeJWT(token) {
     try {
-      return jwt.verify(token, JWT_KEY);
+      return jwt.verify(token, process.env.SECRET_KEY);
     } catch (err) {
-      throw new GraphQLError(err)
+      throw new GraphQLError(err);
     }
   }
 }
