@@ -25,8 +25,8 @@ class NovelService {
       endOfDay = "";
     switch (type) {
       case "daily":
-        startOfDay = moment().subtract(1, "days").startOf("day");
-        endOfDay = moment().subtract(1, "days").endOf("day");
+        startOfDay = moment().subtract(1, "days").startOf("day").format('YYYY-MM-DD HH:mm:ss');
+        endOfDay = moment().subtract(1, "days").endOf("day").format('YYYY-MM-DD HH:mm:ss');
         break;
       case "weekly":
         startOfDay = moment().subtract(7, "days").startOf("day");
