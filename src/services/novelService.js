@@ -282,6 +282,8 @@ class NovelService {
           "first_novel_publish_at",
           "cover_picture_url",
           "author",
+          "created_at",
+          "updated_at",
           [
             sequelize.literal(
               "(SELECT publish_at FROM episodes WHERE episodes.novel_id = Novel.novel_id AND episodes.`order` = 1)"
@@ -313,8 +315,7 @@ class NovelService {
 
         where: { ...whereCondition, is_publish: 1 },
         order,
-        limit:5,
-        subQuery: false,
+        limit: 5,
       });
 
       const novelsNew = novels.map((novel, index) => ({
