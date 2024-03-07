@@ -5,7 +5,7 @@ const novelResolver = {
   Query: {
     novels: async (parent, args, context) => {
       try {
-        return await Novel.findAll();
+        return await NovelService.getListNovel(parent, args, context);
       } catch (error) {
         throw new GraphQLError(error.message);
       }

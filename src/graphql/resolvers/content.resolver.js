@@ -6,6 +6,9 @@ const {
   CONTENT_NOTI,
   CONTENT_SLIDE_BANNER,
 } = require("../../constants/constants");
+const { GraphQLError } = require("graphql");
+const { throwCustomError } = require("../../heplers/errorHandle");
+
 const contentResolver = {
   Query: {
     contentsBanner: async (parent, args, context) => {
@@ -13,14 +16,18 @@ const contentResolver = {
       if (type !== CONTENT_SLIDE_BANNER) {
         return null;
       }
-      const content = await Content.findAll({
-        attributes: ["content_url", "destination_url"],
-        where: {
-          position_type: type,
-        },
-        order: [["sort_order", "DESC"]],
-      });
-      return content;
+      try {
+        const content = await Content.findAll1({
+          attributes: ["content_url", "destination_url"],
+          where: {
+            position_type: type,
+          },
+          order: [["sort_order", "DESC"]],
+        });
+        return content;
+      } catch (error) {
+         throwCustomError(error.message);
+      }
     },
 
     contentsNoti: async (parent, args, context) => {
@@ -34,7 +41,6 @@ const contentResolver = {
       } else {
         attributes = [
           "title",
-          "content",
           "publication_start_at",
           "information_type",
           "content_url",

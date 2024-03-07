@@ -76,6 +76,7 @@ const novelSchema = gql`
     updated_at: DateTime
     badges: [OfficialBadge]
     tags: [OfficialTag]
+    status: String
   }
 
   input NovelInput {
@@ -107,6 +108,10 @@ const novelSchema = gql`
     currentPage: Int
   }
 
+  type NovelResponse {
+    novels: [NovelList]
+  }
+
   input FilterNovel {
     searchValue: String
     type: String
@@ -128,7 +133,7 @@ const novelSchema = gql`
 
   type Query {
     novel(novel_id: Int!, type: String): NovelList
-    novels: [Novel]
+    novels(type: Int): NovelResponse
     getNovelsByAuthor(userId: Int!, page: Int, limit: Int): NovelPagination
     getNovelsPaginate(
       page: Int

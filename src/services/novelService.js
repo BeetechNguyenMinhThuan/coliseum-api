@@ -252,6 +252,112 @@ class NovelService {
     };
   }
 
+  static async getListNovel(parent, args, context) {
+    try {
+      const { filter, type } = args;
+      const { user } = context;
+
+      let whereCondition = {};
+      let order = [];
+
+      if (filter) {
+        whereCondition.title = {
+          [Op.like]: `%${filter?.searchValue ?? ""}%`,
+        };
+      }
+
+      if (type === 1) {
+        order.push(["created_at", "DESC"]);
+      } else if (type === 2) {
+        order.push(["updated_at", "DESC"]);
+      }
+
+      const { count, rows: novels } = await Novel.findAndCountAll({
+        attributes: [
+          "novel_ulid",
+          "novel_id",
+          "is_completed",
+          "title",
+          "synopsis",
+          "first_novel_publish_at",
+          "cover_picture_url",
+          "author",
+          [
+            sequelize.literal(
+              "(SELECT publish_at FROM episodes WHERE episodes.novel_id = Novel.novel_id AND episodes.`order` = 1)"
+            ),
+            "max_updated_at",
+          ],
+        ],
+        include: [
+          {
+            model: Episode,
+            as: "episodes",
+            attributes: [],
+            required: false, // inner join (true when search, false not search)
+          },
+          {
+            model: User,
+            as: "userLikeNovels",
+            attributes: [],
+            through: {
+              model: UserLike,
+              attributes: [],
+            },
+          },
+          {
+            model: User,
+            as: "Users",
+          },
+        ],
+
+        where: { ...whereCondition, is_publish: 1 },
+        order,
+        limit:5,
+        subQuery: false,
+      });
+
+      const novelsNew = novels.map((novel, index) => ({
+        novel_ulid: novel.novel_ulid,
+        title: novel.title,
+        novel_id: novel.novel_id,
+        synopsis: novel.synopsis,
+        cover_picture_url: novel.cover_picture_url,
+        is_completed: novel.is_completed,
+        author: novel.author,
+        user_uuid: novel.Users.user_uuid,
+        first_novel_publish_at: format(
+          new Date(novel.first_novel_publish_at),
+          "yyyy-MM-dd HH:mm:ss"
+        ),
+        max_updated_at: format(
+          new Date(novel.dataValues.max_updated_at),
+          "yyyy-MM-dd HH:mm:ss"
+        ),
+        episode_count: novel.countEpisodes(),
+        likes: novel.countUserLikeNovels(),
+        comments: novel.countNovelComments(),
+        bookmarks: novel.countUserBookmarkNovels(),
+        user: novel.Users,
+        tags: novel.getNovelTags(),
+        badges: novel.getNovelBadges(),
+        user_likes: novel.getUserLikeNovels({
+          through: {
+            model: UserLike,
+            attributes: [],
+          },
+        }),
+        user_bookmarks: novel.getUserBookmarkNovels(),
+      }));
+
+      return {
+        novels: novelsNew,
+      };
+    } catch (error) {
+      throw new GraphQLError(error.message);
+    }
+  }
+
   static async paginate(parent, args, context) {
     try {
       const { page, limit, filter, type } = args;
@@ -344,7 +450,7 @@ class NovelService {
         group: ["novel_id"],
         order,
         limit,
-        offset,
+        // offset,
         subQuery: false,
       });
 
