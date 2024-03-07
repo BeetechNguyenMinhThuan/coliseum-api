@@ -350,9 +350,7 @@ class NovelService {
         user_bookmarks: novel.getUserBookmarkNovels(),
       }));
 
-      return {
-        novels: novelsNew,
-      };
+      return novelsNew;
     } catch (error) {
       throw new GraphQLError(error.message);
     }
