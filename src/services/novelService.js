@@ -380,7 +380,7 @@ class NovelService {
       let order = [];
 
       if (filter) {
-        whereCondition.tite = {
+        whereCondition.title = {
           [Op.like]: `%${filter?.searchValue ?? ""}%`,
         };
       }
