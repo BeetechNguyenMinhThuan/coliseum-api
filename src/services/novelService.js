@@ -461,7 +461,7 @@ class NovelService {
         group: ["novel_id"],
         order,
         limit,
-        // offset,
+        offset,
         subQuery: false,
       });
 
