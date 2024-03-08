@@ -145,12 +145,20 @@ class NovelService {
     if (!type) {
       type = "cumulative";
     }
+    const currentTime = new Date();
     let whereConditionTimeFilter = null;
     let order = [];
 
     // Handle arrange novels
     if (type === "new") {
       order.push(["first_novel_publish_at", "DESC"]);
+    } else if (type === "hot") {
+      whereConditionTimeFilter = {
+        created_at: {
+          [Op.between]: [subHours(currentTime, 2), currentTime],
+        },
+      };
+      order.push(["likes", "DESC"]);
     } else {
       let { startOfDay, endOfDay } = await this.getTimeFilter(type);
       if (startOfDay && endOfDay) {
@@ -350,7 +358,7 @@ class NovelService {
         }),
         user_bookmarks: novel.getUserBookmarkNovels(),
         created_at: novel.created_at,
-        updated_at: novel.updated_at
+        updated_at: novel.updated_at,
       }));
 
       return {
@@ -372,7 +380,7 @@ class NovelService {
       let order = [];
 
       if (filter) {
-        whereCondition.title = {
+        whereCondition.tite = {
           [Op.like]: `%${filter?.searchValue ?? ""}%`,
         };
       }
