@@ -349,6 +349,8 @@ class NovelService {
           },
         }),
         user_bookmarks: novel.getUserBookmarkNovels(),
+        created_at: novel.created_at,
+        updated_at: novel.updated_at
       }));
 
       return {
