@@ -6,10 +6,10 @@ class EpisodeService {
       const { type, episodeId, novelId } = args;
       const { user } = context;
 
-      let whereCondition = {};
+      let whereCondition = { episode_id: episodeId, novel_id: novelId };
 
       const episode = await Episode.findOne({
-        where: { episode_id: episodeId, novel_id: novelId },
+        where: whereCondition,
       });
 
       const totalEpisodes = await Episode.count({
