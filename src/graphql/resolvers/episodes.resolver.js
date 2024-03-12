@@ -8,10 +8,7 @@ const episodeResolver = {
       return EpisodeService.find(parent, args, context);
     },
     episodes: async (parent, args, context) => {
-      try {
-      } catch (error) {
-        throw new GraphQLError(error.message);
-      }
+      return EpisodeService.paginate(parent, args, context);
     },
   },
   Mutation: {

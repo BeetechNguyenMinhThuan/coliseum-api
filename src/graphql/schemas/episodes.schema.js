@@ -38,7 +38,13 @@ const episodeSchema = gql`
   }
 
   type Query {
-    episodes: EpisodePagination
+    episodes(
+      page: Int
+      limit: Int
+      novelId: Int!
+      type: String
+      episodeId: Int
+    ): EpisodePagination
     episode(novelId: Int!, type: String, episodeId: Int!): EpisodeResponse
   }
 
