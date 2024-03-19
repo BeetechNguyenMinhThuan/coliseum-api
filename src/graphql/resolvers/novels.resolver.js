@@ -100,11 +100,10 @@ const novelResolver = {
         throw new GraphQLError(error.message);
       }
     },
-    user_like: async (parent, args, context) => {
+    user_likes: async (parent, args, context) => {
       try {
         const userLikes = await parent.getUserLikeNovels();
-        const userIds = userLikes.map((user) => user.user_id);
-        return userIds;
+        return userLikes;
       } catch (error) {
         throw new GraphQLError(error.message);
       }
@@ -112,8 +111,7 @@ const novelResolver = {
     user_bookmarks: async (parent, args, context) => {
       try {
         const userBookmarks = await parent.getUserBookmarkNovels();
-        const userIds = userBookmarks.map((user) => user.user_id);
-        return userIds;
+        return userBookmarks;
       } catch (error) {
         throw new GraphQLError(error.message);
       }
