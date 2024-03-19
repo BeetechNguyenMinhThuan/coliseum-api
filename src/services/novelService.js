@@ -488,6 +488,7 @@ class NovelService {
         likes: novel.dataValues.likes,
         comments: novel.countNovelComments(),
         bookmarks: novel.countUserBookmarkNovels(),
+        episodes: novel.getEpisodes(),
         user: novel.Users,
         tags: novel.getNovelTags(),
         badges: novel.getNovelBadges(),
