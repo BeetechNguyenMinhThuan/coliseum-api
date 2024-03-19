@@ -40,6 +40,13 @@ const novelResolver = {
         throw new GraphQLError(error.message);
       }
     },
+    episodes: async (parent, args, context) => {
+      try {
+        return await parent.getEpisodes();
+      } catch (error) {
+        throw new GraphQLError(error.message);
+      }
+    },
     author: async (parent, args, context) => {
       try {
         const user = await parent.getUsers();
