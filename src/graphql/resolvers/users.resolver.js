@@ -8,6 +8,7 @@ const {
 const { GraphQLError } = require("graphql");
 const { throwCustomError } = require("../../heplers/errorHandle");
 const { ErrorTypes } = require("../../heplers/errorHandle");
+const NovelService = require("../../services/novelService");
 const userResolver = {
   Query: {
     users: async (parent, args, context) => {
@@ -63,7 +64,7 @@ const userResolver = {
   User: {
     novel_like: async (parent, args, context) => {
       try {
-        return await parent.getUserLikeNovels();
+        return await NovelService.getListNovelUserLike(parent, args, context);
       } catch (error) {
         throw new GraphQLError(error.message);
       }
@@ -82,9 +83,9 @@ const userResolver = {
         throw new GraphQLError(error.message);
       }
     },
-    novels: async (parent, args, context) => {
+    novelsPaginate: async (parent, args, context) => {
       try {
-        return await parent.getNovels();
+        return await NovelService.getListNovelByAuthor(parent, args, context);
       } catch (error) {
         throw new GraphQLError(error.message);
       }

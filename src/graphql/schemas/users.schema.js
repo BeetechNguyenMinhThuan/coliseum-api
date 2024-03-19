@@ -8,13 +8,24 @@ const userSchema = gql`
     s3_url: String!
     first_login_at: DateTime!
     last_login_at: DateTime!
-    novel_like: [Novel]
+    novel_like(
+      pageNovelLike: Int
+      limitNovelLike: Int
+      userId: Int
+    ): NovelLikePaginate
     novel_bookmark: [Novel]
     user_badges: [OfficialBadge]
-    novels: [Novel]
+    novelsPaginate(page: Int, limit: Int, userId: Int): NovelPagination
     created_at: DateTime
     updated_at: DateTime
     deleted_at: DateTime
+  }
+
+  type NovelLikePaginate {
+    novels: [Novel]
+    totalItems: Int
+    totalPages: Int
+    currentPage: Int
   }
 
   input createUserInput {

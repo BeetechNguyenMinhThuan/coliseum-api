@@ -544,7 +544,6 @@ class NovelService {
 
       const totalNovels = count;
 
-      console.log(totalNovels);
       const novelsNew = novels.map((novel) => ({
         novel_ulid: novel.novel_ulid,
         title: novel.title,
@@ -566,7 +565,7 @@ class NovelService {
         badges: novel.getNovelBadges(),
         user_likes: novel.getUserLikeNovels(),
         user_bookmarks: novel.getUserBookmarkNovels(),
-        episodes: novel.getEpisodes()
+        episodes: novel.getEpisodes(),
       }));
 
       return {
@@ -578,6 +577,49 @@ class NovelService {
     } catch (error) {
       throw new GraphQLError(error.message);
     }
+  }
+
+  static async getListNovelUserLike(parent, args, context) {
+    const { pageNovelLike: page, limitNovelLike: limit, userId } = args;
+
+    const offset = (page - 1) * limit;
+    const { count, rows: novels } = await Novel.findAndCountAll({
+      attributes: [
+        "novel_ulid",
+        "novel_id",
+        "is_completed",
+        "title",
+        "synopsis",
+        "first_novel_publish_at",
+        "cover_picture_url",
+        "author",
+      ],
+      include: [
+        {
+          model: User,
+          as: "userLikeNovels",
+          attributes: [],
+          where: { user_id: userId },
+          through: {
+            model: UserLike,
+            attributes: [],
+          },
+        },
+      ],
+
+      where: { is_publish: 1 },
+      limit,
+      offset,
+    });
+
+    const totalNovels = count;
+
+    return {
+      novels: novels,
+      totalItems: totalNovels,
+      totalPages: Math.ceil(totalNovels / limit),
+      currentPage: page,
+    };
   }
 }
 module.exports = NovelService;
