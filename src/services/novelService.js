@@ -566,6 +566,7 @@ class NovelService {
         badges: novel.getNovelBadges(),
         user_likes: novel.getUserLikeNovels(),
         user_bookmarks: novel.getUserBookmarkNovels(),
+        episodes: novel.getEpisodes()
       }));
 
       return {
