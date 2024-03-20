@@ -1,5 +1,13 @@
 const { GraphQLError } = require("graphql");
-const { Novel, UserLike, User, Episode, sequelize } = require("../models");
+const {
+  Novel,
+  UserLike,
+  User,
+  Episode,
+  sequelize,
+  OfficialTag,
+  NovelTag,
+} = require("../models");
 const { Op } = require("sequelize");
 const { subHours, subDays, format, startOfDay } = require("date-fns");
 const moment = require("moment");
@@ -264,7 +272,6 @@ class NovelService {
     try {
       const { filter, type } = args;
       const { user } = context;
-
       let whereCondition = {};
       let order = [];
 
@@ -350,12 +357,7 @@ class NovelService {
         user: novel.Users,
         tags: novel.getNovelTags(),
         badges: novel.getNovelBadges(),
-        user_likes: novel.getUserLikeNovels({
-          through: {
-            model: UserLike,
-            attributes: [],
-          },
-        }),
+        user_likes: novel.getUserLikeNovels(),
         user_bookmarks: novel.getUserBookmarkNovels(),
         created_at: novel.created_at,
         updated_at: novel.updated_at,
@@ -376,6 +378,7 @@ class NovelService {
       const currentTime = new Date();
 
       let whereCondition = {};
+      let whereConditionTag = {};
       let whereConditionTimeFilter = null;
       let order = [];
 
@@ -383,6 +386,9 @@ class NovelService {
         whereCondition.title = {
           [Op.like]: `%${filter?.searchValue ?? ""}%`,
         };
+        if (filter.tagName) {
+          whereConditionTag = { tag: filter.tagName };
+        }
       }
 
       // Handle arrange novels
@@ -449,6 +455,16 @@ class NovelService {
               model: UserLike,
               attributes: [],
               where: whereConditionTimeFilter,
+            },
+          },
+          {
+            model: OfficialTag,
+            as: "novelTags",
+            attributes: [],
+            where: whereConditionTag,
+            through: {
+              model: NovelTag,
+              attributes: [],
             },
           },
           {

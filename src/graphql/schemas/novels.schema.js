@@ -115,6 +115,7 @@ const novelSchema = gql`
   input FilterNovel {
     searchValue: String
     type: String
+    tagName:String
   }
 
   type UserLikeNovelResponse implements MutationResponse {
