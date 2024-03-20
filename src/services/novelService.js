@@ -378,7 +378,7 @@ class NovelService {
       const currentTime = new Date();
 
       let whereCondition = {};
-      let whereConditionTag = {};
+      let whereConditionTag = null;
       let whereConditionTimeFilter = null;
       let order = [];
 
