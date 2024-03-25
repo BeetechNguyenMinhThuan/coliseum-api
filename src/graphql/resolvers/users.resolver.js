@@ -92,14 +92,15 @@ const userResolver = {
     },
   },
   Mutation: {
-    createUser: async (parent, args, context) => {
+    register: async (parent, args, context) => {
       try {
-        const { user_uuid, name, s3_url, first_login_at, last_login_at } =
+        const { user_uuid, name,author, s3_url, first_login_at, last_login_at } =
           args.input;
 
         if (
           !user_uuid ||
           !name ||
+          !author ||
           !s3_url ||
           !first_login_at ||
           !last_login_at
@@ -109,16 +110,15 @@ const userResolver = {
         const result = await User.create({
           user_uuid,
           name,
+          author,
           s3_url,
           first_login_at,
           last_login_at,
         });
 
         return {
-          code: "200",
           success: true,
-          message: "User created successfully",
-          user: result,
+          message: "User register successfully",
         };
       } catch (error) {
         console.log(error);

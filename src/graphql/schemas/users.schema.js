@@ -28,7 +28,7 @@ const userSchema = gql`
     currentPage: Int
   }
 
-  input createUserInput {
+  input registerUserInput {
     user_uuid: String!
     name: String!
     s3_url: String!
@@ -48,10 +48,9 @@ const userSchema = gql`
     encoding: String!
     buffer: String!
   }
-  type CreateUserMutationResponse implements MutationResponse {
+  type RegisterMutationResponse implements MutationResponse {
     success: Boolean!
     message: String!
-    user: User
   }
 
   extend type Query {
@@ -61,7 +60,7 @@ const userSchema = gql`
   }
   scalar Upload
   extend type Mutation {
-    createUser(input: createUserInput): CreateUserMutationResponse!
+    register(input: registerUserInput): RegisterMutationResponse!
     singleUpload(file: Upload!): File!
   }
 `;
