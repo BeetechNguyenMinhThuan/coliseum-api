@@ -1,4 +1,4 @@
-const AuthService = require("../../services/authService");
+const AuthService = require("../../services/auth.service");
 const authResolver = {
   Query: {
     login: async (parent, args, context) => {

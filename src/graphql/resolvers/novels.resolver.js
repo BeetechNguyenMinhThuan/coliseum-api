@@ -1,6 +1,6 @@
 const { GraphQLError } = require("graphql");
 const { Novel, UserLike, UserBookmark } = require("../../models");
-const NovelService = require("../../services/novelService");
+const NovelService = require("../../services/novel.service");
 const novelResolver = {
   Query: {
     novels: async (parent, args, context) => {

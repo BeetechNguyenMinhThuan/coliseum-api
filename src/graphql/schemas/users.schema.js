@@ -42,7 +42,12 @@ const userSchema = gql`
     totalPages: Int
     currentPage: Int
   }
-
+  type File {
+    filename: String!
+    mimetype: String!
+    encoding: String!
+    buffer: String!
+  }
   type CreateUserMutationResponse implements MutationResponse {
     success: Boolean!
     message: String!
@@ -54,9 +59,10 @@ const userSchema = gql`
     user(userId: Int!): User
     getUsersPaginate(page: Int, limit: Int): UserPagination
   }
-
+  scalar Upload
   extend type Mutation {
     createUser(input: createUserInput): CreateUserMutationResponse!
+    singleUpload(file: Upload!): File!
   }
 `;
 

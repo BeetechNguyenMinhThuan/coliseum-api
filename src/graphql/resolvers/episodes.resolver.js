@@ -1,6 +1,6 @@
 const { GraphQLError } = require("graphql");
 const { Episode } = require("../../models");
-const EpisodeService = require("../../services/episodeService");
+const EpisodeService = require("../../services/episode.service");
 
 const episodeResolver = {
   Query: {

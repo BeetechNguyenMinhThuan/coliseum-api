@@ -8,7 +8,7 @@ const {
 const { GraphQLError } = require("graphql");
 const { throwCustomError } = require("../../heplers/errorHandle");
 const { ErrorTypes } = require("../../heplers/errorHandle");
-const NovelService = require("../../services/novelService");
+const NovelService = require("../../services/novel.service");
 const userResolver = {
   Query: {
     users: async (parent, args, context) => {
@@ -124,6 +124,11 @@ const userResolver = {
         console.log(error);
         throw new GraphQLError(error.message);
       }
+    },
+    singleUpload: async (parent, args, context) => {
+      console.log(context);
+    const { file } = args;
+      console.log(file);
     },
   },
 };

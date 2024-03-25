@@ -3,8 +3,8 @@ const { Round, Event, User } = require("../../models");
 const { ErrorTypes, throwCustomError } = require("../../heplers/errorHandle");
 const { sequelize } = require("../../models");
 const Joi = require("joi");
-const { createNewRound } = require("../../validations/roundValidation");
-const RoundService = require("../../services/roundService");
+const { createNewRound } = require("../../validations/round.validation");
+const RoundService = require("../../services/round.service");
 const { Op } = require("sequelize");
 
 const roundResolver = {
