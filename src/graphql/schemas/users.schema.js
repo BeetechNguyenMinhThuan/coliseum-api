@@ -56,6 +56,7 @@ const userSchema = gql`
   extend type Query {
     users: [User]
     user(userId: Int!): User
+    userByUUID(userUUID: String!): User
     getUsersPaginate(page: Int, limit: Int): UserPagination
   }
   scalar Upload

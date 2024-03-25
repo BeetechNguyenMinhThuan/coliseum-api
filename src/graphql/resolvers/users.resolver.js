@@ -41,6 +41,15 @@ const userResolver = {
         throw new GraphQLError(error);
       }
     },
+    userByUUID: async (parent, args, context) => {
+      try {
+        const { userUUID } = args;
+        const user = await User.findOne({ where: { user_uuid: userUUID } });
+        return user;
+      } catch (error) {
+        throw new GraphQLError(error);
+      }
+    },
 
     getUsersPaginate: async (parent, { page, limit }, context) => {
       try {
