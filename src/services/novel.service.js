@@ -534,10 +534,10 @@ class NovelService {
   static async getListNovelByAuthor(parent, args, context) {
     try {
       const { page, limit, filter, type, userId } = args;
-      const { user } = context;
-      if (!user) {
-        return null;
-      }
+      // const { user } = context;
+      // if (!user) {
+      //   return null;
+      // }
 
       const offset = (page - 1) * limit;
       const { count, rows: novels } = await Novel.findAndCountAll({
