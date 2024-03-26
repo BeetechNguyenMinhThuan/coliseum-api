@@ -115,7 +115,7 @@ const novelSchema = gql`
   input FilterNovel {
     searchValue: String
     type: String
-    tagName:String
+    tagName: String
   }
 
   type UserLikeNovelResponse implements MutationResponse {
@@ -148,8 +148,12 @@ const novelSchema = gql`
     createNovel(input: NovelInput!): Novel
     updateNovel(novel_id: Int!, input: NovelInput!): Novel
     deleteNovel(novel_id: Int!): String
-    toggleUserLike(novelId: Int!): UserLikeNovelResponse
-    toggleUserBookmark(novelId: Int!, episodeId: Int): UserBookmarkNovelResponse
+    toggleUserLike(novelId: Int!, userId: Int!): UserLikeNovelResponse
+    toggleUserBookmark(
+      novelId: Int!
+      episodeId: Int
+      userId: Int!
+    ): UserBookmarkNovelResponse
   }
 `;
 

@@ -197,9 +197,7 @@ const novelResolver = {
     },
     toggleUserLike: async (_, args, context) => {
       try {
-        const { novelId } = args;
-        const { user } = context.user;
-        const userId = user.id;
+        const { novelId,userId } = args;
         const existingFavorite = await UserLike.findOne({
           where: { user_id: userId, novel_id: novelId },
         });
@@ -235,9 +233,7 @@ const novelResolver = {
     },
     toggleUserBookmark: async (_, args, context) => {
       try {
-        const { novelId, episodeId } = args;
-        const { user } = context.user;
-        const userId = user.id;
+        const { novelId, userId } = args;
         const existingBookmark = await UserBookmark.findOne({
           where: { user_id: userId, novel_id: novelId },
         });
