@@ -23,6 +23,10 @@ const novelResolver = {
       const res = await NovelService.paginate(parent, args, context);
       return res;
     },
+    novelsBookmark: async (parent, args, context) => {
+      const res = await NovelService.getNovelsBookmark(parent, args, context);
+      return res;
+    },
     getNovelsByAuthor: async (parent, args, context) => {
       const res = await NovelService.getListNovelByAuthor(
         parent,

@@ -16,7 +16,6 @@ const { matchVoteSchema } = require("./matchVote.schema");
 const { matchNovelSchema } = require("./matchNovel.schema");
 const { eventCommentSchema } = require("./eventComment.schema");
 const { commonSchema } = require("./common.schema");
-const { authSchema } = require("./auth.schema");
 const { contentSchema } = require("./content.schema");
 
 module.exports = [
@@ -38,6 +37,5 @@ module.exports = [
   matchNovelSchema,
   novelCommentSchema,
   eventCommentSchema,
-  authSchema,
   contentSchema,
 ];

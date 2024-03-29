@@ -11,8 +11,6 @@ const { userBadgesResolver } = require("./userBadges.resolver");
 const { novelCommentResolver } = require("./novelComment.resolver");
 const { eventCommentResolver } = require("./eventComment.resolver");
 const { commonResolver } = require("./common.resolver");
-const { authResolver } = require("./auth.resolver");
-const { contentSchema } = require("../schemas/content.schema");
 const { contentResolver } = require("./content.resolver");
 
 module.exports = [
@@ -28,7 +26,6 @@ module.exports = [
   userBadgesResolver,
   novelCommentResolver,
   eventCommentResolver,
-  authResolver,
   commonResolver,
   contentResolver
 ];

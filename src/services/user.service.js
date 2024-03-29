@@ -1,5 +1,5 @@
 const { GraphQLError } = require("graphql");
-const AuthService = require("./auth.service");
+// const AuthService = require("./auth.service");
 
 class UserService {
   static getUserByToken(token) {

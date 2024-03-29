@@ -32,6 +32,7 @@ const userSchema = gql`
     user_uuid: String!
     name: String!
     s3_url: String!
+    author:String!
     first_login_at: DateTime!
     last_login_at: DateTime!
   }

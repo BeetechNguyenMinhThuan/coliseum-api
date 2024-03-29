@@ -5,6 +5,8 @@ const officialTagSchema = gql`
         tag_id: ID!
         tag_ulid: String
         tag: String
+        font_color: String
+        background_color: String
         start_at: DateTime
         finish_at: DateTime
         created_at: DateTime

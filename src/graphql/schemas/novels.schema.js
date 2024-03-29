@@ -77,8 +77,10 @@ const novelSchema = gql`
     badges: [OfficialBadge]
     tags: [OfficialTag]
     status: String
+    position_ulid: String
+    position_count:Int
   }
-
+  
   input NovelInput {
     novel_ulid: String
     user_id: Int
@@ -135,6 +137,12 @@ const novelSchema = gql`
   type Query {
     novel(novel_id: Int!, type: String): NovelList
     novels(type: Int): NovelResponse
+    novelsBookmark(
+      page: Int
+      limit: Int
+      filter: FilterNovel
+      type: String
+    ): NovelPagination
     getNovelsByAuthor(userId: Int!, page: Int, limit: Int): NovelPagination
     getNovelsPaginate(
       page: Int
