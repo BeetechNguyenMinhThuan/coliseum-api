@@ -12,6 +12,7 @@ const { novelCommentResolver } = require("./novelComment.resolver");
 const { eventCommentResolver } = require("./eventComment.resolver");
 const { commonResolver } = require("./common.resolver");
 const { contentResolver } = require("./content.resolver");
+const { eventParticipantResolver } = require("./eventParticipants.resolver");
 
 module.exports = [
   officialTagResolver,
@@ -27,5 +28,6 @@ module.exports = [
   novelCommentResolver,
   eventCommentResolver,
   commonResolver,
-  contentResolver
+  contentResolver,
+  eventParticipantResolver
 ];

@@ -38,4 +38,5 @@ module.exports = [
   novelCommentSchema,
   eventCommentSchema,
   contentSchema,
+  eventParticipantSchema
 ];
