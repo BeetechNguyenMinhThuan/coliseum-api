@@ -31,7 +31,7 @@ const matchSchema = gql`
     type Mutation {
         createMatch(round_id: Int!, match_uuid: String!, match_name: String!, vote_count: Int, winner_count: Int, winner_type: Int): Match
         updateMatch(updates: [UpdateMatchInput!]!): [Match]
-        deleteMatch(match_id: ID!): Match
+        deleteMatch(match_id: ID!): String
     }
 `
 

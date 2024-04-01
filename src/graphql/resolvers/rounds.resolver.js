@@ -10,12 +10,6 @@ const { Op } = require("sequelize");
 const roundResolver = {
   Query: {
     rounds: async (parent, args, context) => {
-      const { user } = context;
-      console.log(user);
-
-      if (!user) {
-        return null;
-      }
       const res = await RoundService.get(args);
       return res;
     },
@@ -32,10 +26,6 @@ const roundResolver = {
     },
     getRoundsPaginate: async (parent, { page, limit, filter }, context) => {
       try {
-        const { user } = context;
-        if (!user) {
-          return null;
-        }
         const whereCondition = {
           round_name: {
             [Op.like]: `%${filter.searchValue ?? ""}%`,
