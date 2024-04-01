@@ -14,6 +14,7 @@ const { commonResolver } = require("./common.resolver");
 const { contentResolver } = require("./content.resolver");
 const { eventParticipantResolver } = require("./eventParticipants.resolver");
 const { matchNovelResolver } = require("./matchNovels.resolver");
+const { matchVoteResolver } = require("./matchVotes.resolver");
 
 module.exports = [
   officialTagResolver,
@@ -31,5 +32,6 @@ module.exports = [
   commonResolver,
   contentResolver,
   eventParticipantResolver,
-  matchNovelResolver
+  matchNovelResolver,
+  matchVoteResolver
 ];

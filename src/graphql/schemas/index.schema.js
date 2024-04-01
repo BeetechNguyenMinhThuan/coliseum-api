@@ -39,5 +39,4 @@ module.exports = [
   eventCommentSchema,
   contentSchema,
   eventParticipantSchema,
-  matchNovelSchema
 ];
