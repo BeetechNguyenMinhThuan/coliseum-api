@@ -4,6 +4,7 @@ const eventParticipantSchema = gql`
     type EventParticipant {
         event_id: Int,
         novel_id: Int,
+        user_id: Int,
         created_at: DateTime
         updated_at: DateTime
         deleted_at: DateTime
